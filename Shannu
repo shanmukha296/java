@@ -4,3 +4,92 @@ Hi shannu
 my name devops
 Hi shannu
 my name devops
+Description	Jenkins
+
+For your current learning/testing setup, 0.0.0.0/0 will allow GitHub to reach Jenkins.
+
+Then click Save rules.
+
+Then test
+
+Open:
+
+http://44.203.23.165:8080
+
+You already confirmed Jenkins opens, but after adding the rule, go to GitHub:
+
+Repository → Settings → Webhooks → your webhook → Recent Deliveries
+
+Click Redeliver.
+
+Your webhook URL should be:
+
+http://44.203.23.165:8080/github-webhook/
+One more thing
+
+Your current GitHub authentication error:
+
+Invalid username or token
+Authentication failed
+
+is a separate issue. Once the webhook successfully reaches Jenkins, Jenkins may still fail to checkout the repository until you configure the GitHub PAT credentials.
+
+So the correct order is:
+
+AWS 8080 → GitHub Webhook → Jenkins trigger → GitHub credentials → Git checkout → Build.
+
+done
+
+Excellent 👍 Now let's test the complete GitHub → Jenkins Webhook flow.
+
+Step 1: Redeliver the webhook
+
+Go to:
+
+GitHub → git-repo → Settings → Webhooks → your webhook
+
+Click the failed delivery and select Redeliver.
+
+You should now see a green checkmark / successful delivery.
+
+Step 2: Check Jenkins
+
+Open:
+
+Jenkins → webhook → Build Now / Build History
+
+If the webhook is working, a new build should automatically appear after a GitHub push.
+
+Step 3: Make a test push
+
+From your local Git repository:
+
+git add .
+git commit -m "Test Jenkins webhook"
+git push origin main
+
+Then check Jenkins.
+
+Expected flow:
+
+GitHub
+   ↓ push
+GitHub Webhook
+   ↓
+Jenkins /github-webhook/
+   ↓
+webhook job triggered
+   ↓
+Git checkout
+   ↓
+Build
+⚠️ If Jenkins starts but fails at Git checkout
+
+You may again see:
+
+Invalid username or token.
+Password authentication is not supported for Git operations.
+
+That's okay—the webhook itself is then working. The remaining problem would be your GitHub credentials/PAT in Jenkins.
+
+After you click Redeliver, tell me whether GitHub shows green/successful or red/failed.
