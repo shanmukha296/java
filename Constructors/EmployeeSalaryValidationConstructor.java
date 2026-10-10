@@ -1,6 +1,5 @@
 import java.lang.String;
 import java.lang.System;
-
 public class EmployeeSalaryValidationConstructor
 {
 	String name;
